@@ -137,11 +137,35 @@ class DocumentController extends Controller
 
     public function download(Document $document)
     {
-        if (auth()->user()->role !== 'admin' && auth()->user()->id !== $document->user_id) {
+        // Authorization: admin bisa download semua, user hanya file mereka sendiri
+        if (auth()->user()->role !== 'admin' && auth()->user()->id !== $document->user_id && auth()->user()->role !== 'karyawan') {
             abort(403);
         }
 
-        return response()->download(storage_path('app/public/' . $document->file_path));
+        $filePath = storage_path('app/public/' . $document->file_path);
+        
+        // Check file exists
+        if (!file_exists($filePath)) {
+            abort(404, 'File tidak ditemukan: ' . $document->file_path);
+        }
+        
+        // Direct download berdasarkan file extension
+        $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+        
+        if ($extension === 'pdf') {
+            // PDF file - direct download
+            return response()->download($filePath, pathinfo($document->file_path, PATHINFO_FILENAME) . '.pdf', [
+                'Content-Type' => 'application/pdf',
+            ]);
+        } elseif ($extension === 'html') {
+            // HTML file - download as attachment
+            return response()->download($filePath, pathinfo($document->file_path, PATHINFO_FILENAME) . '.html', [
+                'Content-Type' => 'text/html; charset=UTF-8',
+            ]);
+        } else {
+            // Other file types - generic download
+            return response()->download($filePath);
+        }
     }
 
     public function approve(Document $document)
@@ -161,6 +185,15 @@ class DocumentController extends Controller
         }
 
         return back()->with('success', 'File berhasil disetujui!');
+    }
+
+    public function showRejectForm(Document $document)
+    {
+        if (auth()->user()->role !== 'admin') {
+            abort(403);
+        }
+
+        return view('document.reject-form', compact('document'));
     }
 
     public function reject(Request $request, Document $document)

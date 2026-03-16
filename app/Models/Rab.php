@@ -12,9 +12,18 @@ class Rab extends Model
         'judul_rab',
         'nomor_rab',
         'tanggal_rab',
+        'waktu_mulai',
+        'waktu_selesai',
+        'tempat_pelaksanaan',
+        'sumber_kegiatan',
+        'jenis_kegiatan',
+        'akun_yang_digunakan',
         'tahun_anggaran',
         'keterangan_rab',
         'total_jumlah',
+        'nama_pemoton',
+        'nama_direktur',
+        'nama_pejabat',
         'status',
     ];
 

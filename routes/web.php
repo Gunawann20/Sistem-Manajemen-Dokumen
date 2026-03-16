@@ -7,6 +7,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\RabController;
+use App\Http\Controllers\PhotoController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -56,6 +57,7 @@ Route::middleware('auth')->group(function () {
 // Document Approval Routes (Admin Only)
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/documents/{document}/approve', [DocumentController::class, 'approve'])->name('document.approve');
+    Route::get('/documents/{document}/reject', [DocumentController::class, 'showRejectForm'])->name('document.reject-form');
     Route::post('/documents/{document}/reject', [DocumentController::class, 'reject'])->name('document.reject');
 });
 
@@ -75,4 +77,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/agenda/{agenda}/rab/create', [RabController::class, 'createForAgenda'])->name('rab.create-for-agenda');
     Route::post('/agenda/{agenda}/rab', [RabController::class, 'storeForAgenda'])->name('rab.store-for-agenda');
 });
+
+// Photo Routes (Admin only for upload/delete)
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::post('/agenda/{agenda}/photo', [PhotoController::class, 'store'])->name('photo.store');
+    Route::delete('/photo/{photo}', [PhotoController::class, 'destroy'])->name('photo.destroy');
+});
+
+// Photo serving route (public, anyone can view)
+Route::get('/photo/{photo}/view', [PhotoController::class, 'show'])->name('photo.show');
 

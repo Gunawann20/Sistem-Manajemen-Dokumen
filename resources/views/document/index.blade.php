@@ -54,15 +54,18 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4">{{ $document->created_at->format('d M Y') }}</td>
-                                <td class="px-6 py-4 space-x-2">
-                                    <a href="{{ route('document.show', $document) }}" class="bg-cyan-500 hover:bg-cyan-600 text-white px-3 py-1 rounded text-sm inline-block"><i class="fas fa-eye"></i> Lihat</a>
-                                    @if($document->status === 'pending' && auth()->user()->id === $document->user_id)
-                                        <form action="{{ route('document.destroy', $document) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"><i class="fas fa-trash"></i> Hapus</button>
-                                        </form>
-                                    @endif
+                                <td class="px-6 py-4">
+                                    <div class="flex gap-2 flex-wrap">
+                                        <a href="{{ route('document.show', $document) }}" class="inline-flex items-center gap-1 bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shadow-sm hover:shadow-md"><i class="fas fa-eye"></i> Lihat</a>
+                                        <a href="{{ route('document.download', $document) }}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shadow-sm hover:shadow-md"><i class="fas fa-download"></i> Download</a>
+                                        @if($document->status === 'pending' && auth()->user()->id === $document->user_id)
+                                            <form action="{{ route('document.destroy', $document) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="inline-flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shadow-sm hover:shadow-md"><i class="fas fa-trash"></i> Hapus</button>
+                                            </form>
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

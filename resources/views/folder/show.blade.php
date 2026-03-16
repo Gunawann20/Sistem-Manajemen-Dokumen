@@ -89,7 +89,7 @@
                                         </div>
                                     </div>
                                     <div class="ml-4">
-                                        <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank" class="bg-[#3b82f6] hover:bg-[#1e3a8a] text-white px-3 py-1 rounded text-xs font-semibold transition">
+                                        <a href="{{ route('document.download', $doc) }}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shadow-sm hover:shadow-md">
                                             <i class="fas fa-download"></i> Download
                                         </a>
                                     </div>

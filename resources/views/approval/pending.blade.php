@@ -54,21 +54,23 @@
                                     </td>
                                     <td class="px-6 py-4 text-sm">{{ $document->created_at->format('d M Y H:i') }}</td>
                                     <td class="px-6 py-4">
-                                        <a href="{{ route('document.show', $document) }}" class="bg-cyan-500 hover:bg-cyan-600 text-white px-2 py-1 rounded text-xs font-semibold mr-2">
-                                            <i class="fas fa-eye"></i> Review
-                                        </a>
-                                        <form action="{{ route('admin.approve', $document) }}" method="POST" class="inline">
-                                            @csrf
-                                            <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-xs font-semibold mr-2" onclick="return confirm('Setujui dokumen ini?')">
-                                                <i class="fas fa-check"></i> Setujui
-                                            </button>
-                                        </form>
-                                        <form action="{{ route('admin.reject', $document) }}" method="POST" class="inline">
-                                            @csrf
-                                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs font-semibold" onclick="return confirm('Tolak dokumen ini?')">
+                                        <div class="flex gap-2 flex-wrap">
+                                            <a href="{{ route('document.show', $document) }}" class="inline-flex items-center gap-1 bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shadow-sm hover:shadow-md">
+                                                <i class="fas fa-eye"></i> Review
+                                            </a>
+                                            <a href="{{ route('document.download', $document) }}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shadow-sm hover:shadow-md">
+                                                <i class="fas fa-download"></i> Download
+                                            </a>
+                                            <form action="{{ route('admin.approve', $document) }}" method="POST" class="inline">
+                                                @csrf
+                                                <button type="submit" class="inline-flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shadow-sm hover:shadow-md" onclick="return confirm('Setujui dokumen ini?')">
+                                                    <i class="fas fa-check"></i> Setujui
+                                                </button>
+                                            </form>
+                                            <a href="{{ route('document.reject-form', $document) }}" class="inline-flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shadow-sm hover:shadow-md">
                                                 <i class="fas fa-times"></i> Tolak
-                                            </button>
-                                        </form>
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

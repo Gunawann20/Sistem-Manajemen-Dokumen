@@ -19,7 +19,6 @@
                     <img src="{{ asset('images/logo.png') }}" alt="Logo BKKBN" class="h-14 w-auto drop-shadow-lg">
                 </div>
                 <!-- Institusi Info -->
-                <h3 class="text-white text-sm font-bold mb-1">RMSP</h3>
                 <p class="text-[#f59e0b] text-xs m-0 leading-tight font-semibold">Kementerian Kependudukan</p>
                 <p class="text-[#f59e0b] text-xs m-0 leading-tight font-semibold">Pembangunan Keluarga</p>
                 <p class="text-gray-300 text-xs m-0 mt-3 leading-tight">Sistem Manajemen</p>
@@ -79,7 +78,7 @@
                     <img src="{{ asset('images/logo.png') }}" alt="Logo BKKBN" class="h-12 w-auto drop-shadow">
                     <div>
                         <h2 class="text-[#1e3a8a] text-lg font-bold m-0">@yield('page-title', 'Dashboard')</h2>
-                        <p class="text-gray-600 text-xs m-0">RMSP - Kementerian Kependudukan Pembangunan Keluarga / BKKBN</p>
+                        <p class="text-gray-600 text-xs m-0">Direktorat Bina Akses Pelayanan KB</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
@@ -120,7 +119,7 @@
 
             <!-- Footer -->
             <div class="bg-[#1e3a8a] text-white text-center p-5 mt-10">
-                <p class="m-0">&copy; 2026 RMSP - Rumah Management Dokumen. All rights reserved.</p>
+                <p class="m-0">&copy; 2026 Kementerian Kependudukan Pembangunan Keluarga</p>
             </div>
         </div>
     @else

@@ -15,12 +15,31 @@ class RabItem extends Model
         'satuan',
         'harga_satuan',
         'jumlah',
+        'potongan_50_persen',
+        'pajak',
+        'jumlah_pasca_pajak',
+        'surat_undangan',
+        'kak',
+        'materi',
+        'notulen',
+        'absen',
+        'kuitansi',
+        'keterangan_item',
     ];
 
     protected $casts = [
         'volume' => 'decimal:2',
         'harga_satuan' => 'decimal:2',
         'jumlah' => 'decimal:2',
+        'potongan_50_persen' => 'decimal:2',
+        'pajak' => 'decimal:2',
+        'jumlah_pasca_pajak' => 'decimal:2',
+        'surat_undangan' => 'boolean',
+        'kak' => 'boolean',
+        'materi' => 'boolean',
+        'notulen' => 'boolean',
+        'absen' => 'boolean',
+        'kuitansi' => 'boolean',
     ];
 
     public function rab()

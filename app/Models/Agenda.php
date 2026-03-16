@@ -29,6 +29,11 @@ class Agenda extends Model
         return $this->hasMany(Rab::class);
     }
 
+    public function photos()
+    {
+        return $this->hasMany(Photo::class);
+    }
+
     // Get documents grouped by jenis_dokumen with user count
     public function getDocumentStats()
     {

@@ -104,9 +104,9 @@
                                 <i class="fas fa-check-circle"></i> Setujui
                             </button>
                         </form>
-                        <button type="button" onclick="openRejectModal()" class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-lg transition">
+                        <a href="{{ route('document.reject-form', $document) }}" class="w-full block text-center bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-lg transition">
                             <i class="fas fa-times-circle"></i> Tolak
-                        </button>
+                        </a>
                     </div>
                 </div>
             @elseif($document->status !== 'pending')
@@ -169,46 +169,5 @@
         </div>
     </div>
 
-    <!-- Reject Modal -->
-    <div id="rejectModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div class="bg-white rounded-lg shadow-lg max-w-md w-full mx-4">
-            <div class="bg-red-500 text-white p-4">
-                <h5 class="text-lg font-bold m-0"><i class="fas fa-times-circle"></i> Tolak Dokumen</h5>
-            </div>
-            <form action="{{ route('admin.reject', $document) }}" method="POST" class="p-6">
-                @csrf
-                <div class="mb-4">
-                    <label for="keterangan" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Alasan Penolakan
-                    </label>
-                    <textarea name="keterangan" id="keterangan" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition" required></textarea>
-                </div>
-                <div class="flex gap-2">
-                    <button type="submit" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-lg transition">
-                        <i class="fas fa-times-circle"></i> Tolak
-                    </button>
-                    <button type="button" onclick="closeRejectModal()" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 rounded-lg transition">
-                        <i class="fas fa-times"></i> Batal
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        function openRejectModal() {
-            document.getElementById('rejectModal').classList.remove('hidden');
-        }
-
-        function closeRejectModal() {
-            document.getElementById('rejectModal').classList.add('hidden');
-        }
-
-        // Close modal when clicking outside
-        document.getElementById('rejectModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeRejectModal();
-            }
-        });
-    </script>
+    <!-- Reject Modal removed - now using separate rejection form page -->
 @endsection

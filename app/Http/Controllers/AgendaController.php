@@ -112,7 +112,10 @@ class AgendaController extends Controller
             ? $agenda->documents()->with('user')->paginate(10)
             : $agenda->documents()->where('user_id', $user->id)->paginate(10);
 
-        return view('agenda.show', compact('agenda', 'stats', 'documents', 'userDocuments', 'totalKaryawan'));
+        // Load photos for this agenda
+        $photos = $agenda->photos()->orderBy('created_at', 'desc')->get();
+
+        return view('agenda.show', compact('agenda', 'stats', 'documents', 'userDocuments', 'totalKaryawan', 'photos'));
     }
 
     public function edit(Agenda $agenda)

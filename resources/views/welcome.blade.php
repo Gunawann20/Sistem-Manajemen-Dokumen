@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RMSP - Sistem Management Dokumen</title>
+    <title>Kementerian Kependudukan Pembangunan Keluarga - Sistem Management Dokumen</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -212,7 +212,6 @@
                     </div>
                 </div>
 
-                <h1>RMSP</h1>
                 <div class="landing-subtitle">Sistem Management Dokumen Pendukung</div>
                 <p class="landing-description">
                     Platform terpercaya untuk mengelola dan menyimpan dokumen organisasi Anda dengan aman, efisien, dan terorganisir.
@@ -243,7 +242,7 @@
             <!-- Right Image -->
             <div class="landing-image">
                 <div class="image-frame">
-                    <img src="{{ asset('images/frame.jpeg') }}" alt="RMSP - Sistem Management Dokumen">
+                    <img src="{{ asset('images/frame.jpeg') }}" alt="Kementerian Kependudukan Pembangunan Keluarga - Sistem Management Dokumen">
                 </div>
             </div>
         </div>

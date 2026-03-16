@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3307
--- Generation Time: Feb 24, 2026 at 04:27 AM
+-- Generation Time: Mar 16, 2026 at 06:20 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.2.28
 
@@ -37,13 +37,6 @@ CREATE TABLE `agendas` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `agendas`
---
-
-INSERT INTO `agendas` (`id`, `judul`, `deskripsi`, `tanggal_mulai`, `tanggal_akhir`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'rapat sincia', 'bahas sincia', '2026-02-20', '2026-02-21', 'active', '2026-02-20 08:51:17', '2026-02-20 08:51:17');
 
 -- --------------------------------------------------------
 
@@ -109,15 +102,6 @@ CREATE TABLE `documents` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `documents`
---
-
-INSERT INTO `documents` (`id`, `user_id`, `agenda_id`, `folder_id`, `nama_dokumen`, `jenis_dokumen`, `file_path`, `file_type`, `ukuran_file`, `status`, `keterangan`, `tahun`, `admin_id`, `created_at`, `updated_at`) VALUES
-(3, 3, NULL, NULL, 'sampan - Hasil_Diagnosa_anjing_2026-01-02 (3).pdf', 'RKAKL', 'documents/ICOFm0Ye5RzmhLLRBfXACTXZjvovNwaJBjMOz8D1.pdf', 'pdf', 722959, 'pending', 'qwee', 2026, NULL, '2026-02-20 08:53:24', '2026-02-20 08:53:24'),
-(4, 3, 1, NULL, 'asd - penjualan mingguan.pdf', 'RAPK', 'documents/iuSt2n3GnHQ5JQeehwBoPjWJOTrat9MIFG8jJBJF.pdf', 'pdf', 344846, 'rejected', 'Ditolak', 2026, 1, '2026-02-20 08:59:15', '2026-02-20 09:11:57'),
-(5, 2, 1, NULL, 'sas - 20260130 RAB Radep KBKR 30 Januari 2026.xlsx', 'RAPK', 'documents/1BrYxcPEbv0PfDJIgb0Kx4e2vaFN914b7d5xqkVj.xlsx', 'xlsx', 21662, 'pending', 'abcd', 2026, NULL, '2026-02-23 06:56:39', '2026-02-23 06:56:39');
-
 -- --------------------------------------------------------
 
 --
@@ -151,13 +135,6 @@ CREATE TABLE `folders` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `folders`
---
-
-INSERT INTO `folders` (`id`, `user_id`, `nama_folder`, `deskripsi`, `jenis_dokumen`, `status`, `alasan_reject`, `created_at`, `updated_at`) VALUES
-(1, 3, 'hari ini', 'wrwff', 'LAKIP', 'pending', NULL, '2026-02-20 08:21:58', '2026-02-20 08:21:58');
 
 -- --------------------------------------------------------
 
@@ -223,7 +200,9 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (18, '2026_02_20_160000_add_columns_to_documents_table', 3),
 (19, '2026_02_20_170000_make_folder_id_nullable_in_documents', 4),
 (20, '2026_02_20_170000_create_agendas_table', 5),
-(21, '2026_02_23_create_rabs_table', 6);
+(21, '2026_02_23_create_rabs_table', 6),
+(22, '2026_02_26_000000_update_rabs_table_add_fields', 7),
+(23, '2026_03_03_000000_create_photos_table', 8);
 
 -- --------------------------------------------------------
 
@@ -240,6 +219,22 @@ CREATE TABLE `password_reset_tokens` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `photos`
+--
+
+CREATE TABLE `photos` (
+  `id` bigint UNSIGNED NOT NULL,
+  `agenda_id` bigint UNSIGNED NOT NULL,
+  `file_path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `file_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `keterangan` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `rabs`
 --
 
@@ -250,6 +245,15 @@ CREATE TABLE `rabs` (
   `judul_rab` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `nomor_rab` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tanggal_rab` date NOT NULL,
+  `waktu_mulai` time DEFAULT NULL,
+  `waktu_selesai` time DEFAULT NULL,
+  `tempat_pelaksanaan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sumber_kegiatan` text COLLATE utf8mb4_unicode_ci,
+  `jenis_kegiatan` enum('rapat','online','workshop','pelatihan','lainnya') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'rapat',
+  `akun_yang_digunakan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nama_pemoton` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nama_direktur` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nama_pejabat` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tahun_anggaran` year NOT NULL,
   `keterangan_rab` text COLLATE utf8mb4_unicode_ci,
   `total_jumlah` decimal(15,2) NOT NULL DEFAULT '0.00',
@@ -272,6 +276,16 @@ CREATE TABLE `rab_items` (
   `satuan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `harga_satuan` decimal(15,2) NOT NULL,
   `jumlah` decimal(15,2) NOT NULL,
+  `potongan_50_persen` decimal(15,2) NOT NULL DEFAULT '0.00',
+  `pajak` decimal(15,2) NOT NULL DEFAULT '0.00',
+  `jumlah_pasca_pajak` decimal(15,2) NOT NULL DEFAULT '0.00',
+  `surat_undangan` tinyint(1) NOT NULL DEFAULT '0',
+  `kak` tinyint(1) NOT NULL DEFAULT '0',
+  `materi` tinyint(1) NOT NULL DEFAULT '0',
+  `notulen` tinyint(1) NOT NULL DEFAULT '0',
+  `absen` tinyint(1) NOT NULL DEFAULT '0',
+  `kuitansi` tinyint(1) NOT NULL DEFAULT '0',
+  `keterangan_item` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -296,11 +310,9 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('4K7CSw6QFXqv8Z4HLNUlbGtEHAMbRozLwKVqjRdW', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.109.5 Chrome/142.0.7444.265 Electron/39.3.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiWENpVTNnNWkyR0dBMTM3NnNhdHVQWXpldGRDSXpENXZvOGJXV0RmSCI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czo0NDoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2FkbWluL2FwcHJvdmFsLWhpc3RvcnkiO31zOjk6Il9wcmV2aW91cyI7YToyOntzOjM6InVybCI7czoyNzoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2xvZ2luIjtzOjU6InJvdXRlIjtzOjU6ImxvZ2luIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1771855953),
-('CBm6RGZVy4Gl93hj5mY1vWRaFNNihB0aJeKdj7US', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiMW50V05YVDF3Yk5uc0tjdjBGQno5R0plQ2dWUjVlZUVDMjdoOE5wQiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9wZW5kaW5nLWFwcHJvdmFscyI7czo1OiJyb3V0ZSI7czoxMzoiYWRtaW4ucGVuZGluZyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1771907261),
-('fMM8dsPGUpjAsTuaU02HMyZRw0XHc0Cqb8Afa5xZ', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoicWJmUnVRblg2SGc4Q2M0eG9iZmZPS2ZHTjJGUVJKaWw1QmhXNVZHZSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9wZW5kaW5nLWFwcHJvdmFscyI7czo1OiJyb3V0ZSI7czoxMzoiYWRtaW4ucGVuZGluZyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1771859560),
-('s8sbX7QW1Usq0UCecuH4YYmjVAbGi96FLUkf2TTr', 3, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoib2Y1eGdvdENpakw4SHhhOGZoSWNEOWU3YndOblpqRUdKTVFnRjE4ZyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZ2VuZGEvMSI7czo1OiJyb3V0ZSI7czoxMToiYWdlbmRhLnNob3ciO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aTozO30=', 1771854791),
-('snGIhpomKSQwAhCYBQeii5VTnYOAXThN7QSQCflN', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoibUpBaFZLQmNZVlV4dkVOTmZ2YVlkeThCdjhMbG9pMG93VWw2bWNMbSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQiO3M6NToicm91dGUiO3M6OToiZGFzaGJvYXJkIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjt9', 1771859492);
+('7RJkFuaoevKSOmWMeG6UeBDrNGHJDu5xwFWWimH1', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiRjQ3UnZ5MEFpbXBNNHlKMXRjZWdJZHFSU2ZIT01qdWRiaGNKVXMwOSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9wZW5kaW5nLWFwcHJvdmFscyI7czo1OiJyb3V0ZSI7czoxMzoiYWRtaW4ucGVuZGluZyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1772622324),
+('rPJGgf0CiIqufSLkN1LGMA30GNkmuXlmfAZrWKtO', 3, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiVTJEWFVYallpWWlmTnU1aE5HYVlJYWlwRTdKZGRrclJ6bHJWZG9CTyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mjg6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZ2VuZGEiO3M6NToicm91dGUiO3M6MTI6ImFnZW5kYS5pbmRleCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjM7fQ==', 1772622203),
+('x0CNm6IxCAkOkGzg2v4OUFU9DP0wR2X5ChEQWAGN', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiMzhmR1lSY0Zsb2piZ2FwOHgzVjBxYlBCeU5TZHY2WmxRM0pyQ2FMRiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1772622202);
 
 -- --------------------------------------------------------
 
@@ -411,6 +423,13 @@ ALTER TABLE `password_reset_tokens`
   ADD PRIMARY KEY (`email`);
 
 --
+-- Indexes for table `photos`
+--
+ALTER TABLE `photos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `photos_agenda_id_foreign` (`agenda_id`);
+
+--
 -- Indexes for table `rabs`
 --
 ALTER TABLE `rabs`
@@ -450,7 +469,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `agendas`
 --
 ALTER TABLE `agendas`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `approvals`
@@ -462,7 +481,7 @@ ALTER TABLE `approvals`
 -- AUTO_INCREMENT for table `documents`
 --
 ALTER TABLE `documents`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -486,19 +505,25 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
+-- AUTO_INCREMENT for table `photos`
+--
+ALTER TABLE `photos`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `rabs`
 --
 ALTER TABLE `rabs`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `rab_items`
 --
 ALTER TABLE `rab_items`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -530,6 +555,12 @@ ALTER TABLE `documents`
 --
 ALTER TABLE `folders`
   ADD CONSTRAINT `folders_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `photos`
+--
+ALTER TABLE `photos`
+  ADD CONSTRAINT `photos_agenda_id_foreign` FOREIGN KEY (`agenda_id`) REFERENCES `agendas` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `rabs`

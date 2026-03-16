@@ -149,8 +149,8 @@
                                         @else
                                             <span class="inline-block px-3 py-1 text-xs bg-red-500 text-white rounded"><i class="fas fa-times-circle"></i> Ditolak</span>
                                         @endif
-                                        <a href="{{ route('document.download', $doc) }}" class="bg-cyan-500 hover:bg-cyan-600 text-white px-3 py-1 rounded text-xs font-semibold transition">
-                                            <i class="fas fa-download"></i>
+                                        <a href="{{ route('document.download', $doc) }}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shadow-sm hover:shadow-md">
+                                            <i class="fas fa-download"></i> Download
                                         </a>
                                     </div>
                                 </div>
@@ -208,6 +208,66 @@
                         <strong>Ditutup:</strong> Tidak bisa upload lagi
                     </li>
                 </ul>
+            </div>
+
+            <!-- Photo Documentation Section -->
+            <div class="bg-white rounded-lg shadow overflow-hidden mt-6">
+                <div class="bg-purple-600 text-white p-3">
+                    <h3 class="text-xs font-bold m-0"><i class="fas fa-images"></i> Dokumentasi Foto</h3>
+                </div>
+                <div class="p-3">
+                    <!-- Upload Form for Admin -->
+                    @if(auth()->user()->role === 'admin')
+                        <form action="{{ route('photo.store', $agenda) }}" method="POST" enctype="multipart/form-data" class="mb-3 pb-3 border-b space-y-2">
+                            @csrf
+                            <div>
+                                <label for="foto" class="block text-xs font-semibold text-gray-700 mb-1">Foto</label>
+                                <input type="file" name="foto" id="foto" accept="image/*" required class="w-full px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div>
+                                <label for="keterangan" class="block text-xs font-semibold text-gray-700 mb-1">Ket</label>
+                                <input type="text" name="keterangan" id="keterangan" placeholder="Singkat..." class="w-full px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-1 rounded text-xs transition">
+                                <i class="fas fa-upload"></i> Upload
+                            </button>
+                        </form>
+                    @endif
+
+                    <!-- Photo Gallery -->
+                    @if($photos->count() > 0)
+                        <div>
+                            <p class="text-xs font-semibold text-gray-700 mb-2">{{ $photos->count() }} Foto</p>
+                            <div class="grid grid-cols-3 gap-2">
+                                @foreach($photos as $photo)
+                                    <div class="relative group cursor-pointer rounded overflow-hidden border border-gray-200 hover:border-purple-500 transition bg-gradient-to-br from-gray-100 to-gray-200 h-20" onclick="openPhotoModal('{{ route('photo.show', $photo) }}', '{{ addslashes($photo->keterangan ?? '') }}')">
+                                        <img src="{{ route('photo.show', $photo) }}" alt="Foto" class="w-full h-full object-cover group-hover:scale-110 transition duration-300" loading="eager" style="display:block;">
+                                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition flex items-center justify-center">
+                                            <i class="fas fa-search-plus text-white text-sm opacity-0 group-hover:opacity-100 transition"></i>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        @if(auth()->user()->role === 'admin')
+                            <div class="mt-2 pt-2 border-t space-y-1">
+                                @foreach($photos as $photo)
+                                    <form action="{{ route('photo.destroy', $photo) }}" method="POST" onsubmit="return confirm('Hapus?');" class="inline-block">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-xs text-red-500 hover:text-red-700 font-semibold">
+                                            <i class="fas fa-trash text-xs"></i>
+                                        </button>
+                                    </form>
+                                @endforeach
+                            </div>
+                        @endif
+                    @else
+                        <p class="text-xs text-gray-500 text-center py-3">
+                            <i class="fas fa-image text-gray-400"></i><br>Belum ada
+                        </p>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
@@ -285,7 +345,7 @@
                             </div>
                             
                             <div class="flex gap-2 mt-3 pt-3 border-t border-gray-200">
-                                <a href="/storage/${doc.file_path}" target="_blank" class="flex-1 text-center bg-cyan-500 hover:bg-cyan-600 text-white px-3 py-2 rounded text-xs font-semibold transition">
+                                <a href="/documents/${doc.id}/download" class="flex-1 text-center bg-cyan-500 hover:bg-cyan-600 text-white px-3 py-2 rounded text-xs font-semibold transition">
                                     <i class="fas fa-download"></i> Download
                                 </a>
     `;
@@ -342,27 +402,8 @@
         }
 
         async function rejectDocument(documentId, jenis) {
-            if (!confirm('Tolak dokumen ini?')) return;
-            
-            try {
-                const response = await fetch(`/documents/${documentId}/reject`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-                
-                if (response.ok) {
-                    alert('Dokumen ditolak!');
-                    openDocumentModal(jenis);
-                } else {
-                    alert('Gagal menolak dokumen!');
-                }
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
+            // Redirect to rejection form instead of directly rejecting
+            window.location.href = `/documents/${documentId}/reject`;
         }
 
         // Close modal when pressing Escape
@@ -371,5 +412,49 @@
                 closeDocumentModal();
             }
         });
+
+        // Photo Modal Functions
+        function openPhotoModal(photoUrl, keterangan) {
+            const modal = document.getElementById('photoModal');
+            document.getElementById('photoImage').src = photoUrl;
+            document.getElementById('photoKeterangan').textContent = keterangan || 'Tanpa keterangan';
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePhotoModal() {
+            const modal = document.getElementById('photoModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close photo modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePhotoModal();
+            }
+        });
     </script>
+
+    <!-- Photo Lightbox Modal -->
+    <div id="photoModal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4" onclick="if(event.target === this) closePhotoModal()">
+        <div class="bg-white rounded-lg shadow-2xl overflow-hidden max-w-4xl w-full max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
+            <!-- Header -->
+            <div class="bg-gray-800 text-white p-3 flex justify-between items-center">
+                <h3 class="text-sm font-bold"><i class="fas fa-image"></i> Lihat Foto</h3>
+                <button onclick="closePhotoModal()" class="text-white hover:text-gray-300 text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <!-- Image -->
+            <div class="flex-1 flex items-center justify-center bg-black overflow-auto">
+                <img id="photoImage" src="" alt="Foto" class="max-w-full max-h-full object-contain">
+            </div>
+            <!-- Footer -->
+            <div class="bg-gray-100 p-3 text-center">
+                <p id="photoKeterangan" class="text-sm text-gray-700"></p>
+            </div>
+        </div>
+    </div>
+
 @endsection

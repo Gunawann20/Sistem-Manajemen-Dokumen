@@ -14,7 +14,6 @@
             <div class="mb-4 flex justify-center">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo BKKBN" class="h-16 w-auto filter brightness-0 invert drop-shadow-lg">
             </div>
-            <h1 class="text-2xl mb-2 font-bold">RMSP</h1>
             <p class="text-sm font-semibold opacity-90">Kementerian Kependudukan</p>
             <p class="text-sm font-semibold opacity-90">Pembangunan Keluarga</p>
             <p class="text-xs opacity-85 mt-3">Sistem Manajemen Dokumen</p>
