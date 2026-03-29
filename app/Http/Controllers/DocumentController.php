@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DocumentsExport;
 use App\Models\Document;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DocumentController extends Controller
 {
@@ -18,6 +20,26 @@ class DocumentController extends Controller
         }
 
         return view('document.index', compact('documents'));
+    }
+
+    public function exportExcel()
+    {
+        $user = auth()->user();
+
+        if ($user->role === 'admin') {
+            $documents = Document::with('user')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } else {
+            $documents = Document::with('user')
+                ->where('user_id', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
+
+        $fileName = 'dokumen_' . now()->format('Ymd_His') . '.xlsx';
+
+        return Excel::download(new DocumentsExport($documents), $fileName);
     }
 
     public function create()
@@ -54,8 +76,9 @@ class DocumentController extends Controller
         if ($user->role === 'karyawan') {
             $validated = $request->validate([
                 'nama_dokumen' => 'required|string|max:255',
-                'jenis_dokumen' => 'required|in:RKAKL,RAPK,SPJ,LKJ,LAKIP',
-                'tahun' => 'required|numeric|min:2020|max:2099',
+                'pelaksana' => 'required|string|max:255',
+                'kode_ro' => 'required|string|max:255',
+                'jumlah_anggaran' => 'required|numeric|min:0',
                 'keterangan' => 'nullable|string',
                 'agenda_id' => 'required|exists:agendas,id',
             ]);
@@ -68,8 +91,9 @@ class DocumentController extends Controller
         } else {
             $validated = $request->validate([
                 'nama_dokumen' => 'required|string|max:255',
-                'jenis_dokumen' => 'required|in:RKAKL,RAPK,SPJ,LKJ,LAKIP',
-                'tahun' => 'required|numeric|min:2020|max:2099',
+                'pelaksana' => 'required|string|max:255',
+                'kode_ro' => 'required|string|max:255',
+                'jumlah_anggaran' => 'required|numeric|min:0',
                 'keterangan' => 'nullable|string',
                 'agenda_id' => 'nullable|exists:agendas,id',
             ]);
@@ -87,25 +111,27 @@ class DocumentController extends Controller
 
         // Upload each file
         $uploadCount = 0;
+        $agendaId = $validated['agenda_id'] ?? null;
         foreach ($request->file('documents') as $file) {
             $filePath = $file->store('documents', 'public');
             Document::create([
                 'user_id' => auth()->id(),
-                'agenda_id' => $validated['agenda_id'] ?? null,
+            'agenda_id' => $agendaId,
                 'nama_dokumen' => $request->nama_dokumen . ' - ' . $file->getClientOriginalName(),
-                'jenis_dokumen' => $request->jenis_dokumen,
+                'pelaksana' => $request->pelaksana,
+                'kode_ro' => $request->kode_ro,
+                'jumlah_anggaran' => $request->jumlah_anggaran,
                 'file_path' => $filePath,
                 'file_type' => $file->getClientOriginalExtension(),
                 'ukuran_file' => $file->getSize(),
-                'tahun' => $request->tahun,
                 'keterangan' => $request->keterangan,
                 'status' => 'pending',
             ]);
             $uploadCount++;
         }
 
-        if ($validated['agenda_id']) {
-            return redirect()->route('agenda.show', $validated['agenda_id'])->with('success', "$uploadCount file(s) berhasil di-upload!");
+        if ($agendaId) {
+            return redirect()->route('agenda.show', $agendaId)->with('success', "$uploadCount file(s) berhasil di-upload!");
         }
 
         return redirect()->route('document.index')->with('success', "$uploadCount file(s) berhasil di-upload dan menunggu persetujuan admin!");
@@ -213,5 +239,39 @@ class DocumentController extends Controller
         }
 
         return back()->with('success', 'File berhasil ditolak!');
+    }
+
+    public function saveVerification(Request $request, Document $document)
+    {
+        if (auth()->user()->role !== 'admin' && auth()->user()->id !== $document->user_id) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'nama_verifikator' => 'required|string|max:255',
+        ]);
+
+        $document->update([
+            'nama_verifikator' => $validated['nama_verifikator'],
+        ]);
+
+        return back()->with('success', 'Data verifikasi berhasil disimpan.');
+    }
+
+    public function saveSp2d(Request $request, Document $document)
+    {
+        if (auth()->user()->role !== 'admin' && auth()->user()->id !== $document->user_id) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'tanggal_sp2d' => 'required|date',
+        ]);
+
+        $document->update([
+            'tanggal_sp2d' => $validated['tanggal_sp2d'],
+        ]);
+
+        return back()->with('success', 'Tanggal SP2D berhasil disimpan.');
     }
 }

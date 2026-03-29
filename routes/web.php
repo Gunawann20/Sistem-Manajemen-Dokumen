@@ -47,8 +47,11 @@ Route::middleware('auth')->group(function () {
 // Document Routes (replacing Folder Routes)
 Route::middleware('auth')->group(function () {
     Route::get('/document', [DocumentController::class, 'index'])->name('document.index');
+    Route::get('/document/export/excel', [DocumentController::class, 'exportExcel'])->name('document.export.excel');
     Route::get('/document/create', [DocumentController::class, 'create'])->name('document.create');
     Route::post('/document', [DocumentController::class, 'store'])->name('document.store');
+    Route::post('/document/{document}/verification', [DocumentController::class, 'saveVerification'])->name('document.verify');
+    Route::post('/document/{document}/sp2d', [DocumentController::class, 'saveSp2d'])->name('document.sp2d');
     Route::get('/document/{document}', [DocumentController::class, 'show'])->name('document.show');
     Route::delete('/document/{document}', [DocumentController::class, 'destroy'])->name('document.destroy');
     Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('document.download');

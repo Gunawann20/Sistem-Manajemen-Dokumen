@@ -136,7 +136,7 @@
                                             <p class="font-semibold text-gray-800">{{ $doc->nama_dokumen }}</p>
                                             <p class="text-xs text-gray-500">
                                                 <i class="fas fa-user"></i> {{ $doc->user->name }} • 
-                                                <i class="fas fa-tag"></i> {{ $doc->jenis_dokumen }} •
+                                                <i class="fas fa-tag"></i> {{ $doc->pelaksana ?? '-' }} •
                                                 <i class="fas fa-database"></i> {{ number_format($doc->ukuran_file / 1024, 2) }} KB
                                             </p>
                                         </div>

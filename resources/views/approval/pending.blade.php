@@ -24,8 +24,9 @@
                             <tr>
                                 <th class="px-6 py-3 text-left font-semibold">Nama Dokumen</th>
                                 <th class="px-6 py-3 text-left font-semibold">Uploader</th>
-                                <th class="px-6 py-3 text-left font-semibold">Jenis Dokumen</th>
-                                <th class="px-6 py-3 text-left font-semibold">Tahun</th>
+                                <th class="px-6 py-3 text-left font-semibold">Pelaksana</th>
+                                <th class="px-6 py-3 text-left font-semibold">Kode RO</th>
+                                <th class="px-6 py-3 text-left font-semibold">Jumlah Anggaran</th>
                                 <th class="px-6 py-3 text-left font-semibold">Tanggal</th>
                                 <th class="px-6 py-3 text-left font-semibold">Aksi</th>
                             </tr>
@@ -46,15 +47,28 @@
                                     </td>
                                     <td class="px-6 py-4">
                                         <span class="inline-block px-3 py-1 text-xs bg-[#3b82f6] text-white rounded font-semibold">
-                                            {{ $document->jenis_dokumen }}
+                                            {{ $document->pelaksana ?? '-' }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ $document->tahun ?? '-' }}
+                                        {{ $document->kode_ro ?? '-' }}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        {{ $document->jumlah_anggaran !== null ? number_format($document->jumlah_anggaran, 0, ',', '.') : '-' }}
                                     </td>
                                     <td class="px-6 py-4 text-sm">{{ $document->created_at->format('d M Y H:i') }}</td>
                                     <td class="px-6 py-4">
                                         <div class="flex gap-2 flex-wrap">
+                                            <button type="button"
+                                                onclick="openVerificationModal('{{ $document->id }}', '{{ addslashes($document->nama_verifikator ?? '') }}')"
+                                                class="inline-flex items-center gap-1 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shadow-sm hover:shadow-md">
+                                                <i class="fas fa-user-check"></i> Verifikasi
+                                            </button>
+                                            <button type="button"
+                                                onclick="openSp2dModal('{{ $document->id }}', '{{ $document->tanggal_sp2d ?? '' }}')"
+                                                class="inline-flex items-center gap-1 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shadow-sm hover:shadow-md">
+                                                <i class="fas fa-calendar-check"></i> SP2D
+                                            </button>
                                             <a href="{{ route('document.show', $document) }}" class="inline-flex items-center gap-1 bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shadow-sm hover:shadow-md">
                                                 <i class="fas fa-eye"></i> Review
                                             </a>
@@ -90,5 +104,102 @@
             @endif
         </div>
     </div>
+
+    <!-- Modal Verifikasi -->
+    <div id="verificationModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4" onclick="closeVerificationModal(event)">
+        <div class="w-full max-w-md rounded-lg bg-white shadow-xl" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between border-b px-6 py-4">
+                <h3 class="text-lg font-bold text-gray-800"><i class="fas fa-user-check text-purple-600"></i> Verifikasi</h3>
+                <button type="button" onclick="closeVerificationModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="verificationForm" method="POST" class="p-6">
+                @csrf
+                <div>
+                    <label for="nama_verifikator" class="mb-2 block text-sm font-semibold text-gray-700">Nama Verifikator</label>
+                    <input type="text" name="nama_verifikator" id="nama_verifikator" required
+                        class="w-full rounded-lg border-2 border-gray-300 px-4 py-3 outline-none transition focus:border-purple-500 focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div class="mt-6 flex gap-3">
+                    <button type="button" onclick="closeVerificationModal()" class="flex-1 rounded-lg bg-gray-200 py-2 font-semibold text-gray-700 hover:bg-gray-300">Batal</button>
+                    <button type="submit" class="flex-1 rounded-lg bg-purple-600 py-2 font-semibold text-white hover:bg-purple-700">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal SP2D -->
+    <div id="sp2dModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4" onclick="closeSp2dModal(event)">
+        <div class="w-full max-w-md rounded-lg bg-white shadow-xl" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between border-b px-6 py-4">
+                <h3 class="text-lg font-bold text-gray-800"><i class="fas fa-calendar-check text-indigo-600"></i> SP2D</h3>
+                <button type="button" onclick="closeSp2dModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="sp2dForm" method="POST" class="p-6">
+                @csrf
+                <div>
+                    <label for="tanggal_sp2d" class="mb-2 block text-sm font-semibold text-gray-700">Tanggal SP2D</label>
+                    <input type="date" name="tanggal_sp2d" id="tanggal_sp2d" required
+                        class="w-full rounded-lg border-2 border-gray-300 px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="mt-6 flex gap-3">
+                    <button type="button" onclick="closeSp2dModal()" class="flex-1 rounded-lg bg-gray-200 py-2 font-semibold text-gray-700 hover:bg-gray-300">Batal</button>
+                    <button type="submit" class="flex-1 rounded-lg bg-indigo-600 py-2 font-semibold text-white hover:bg-indigo-700">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const verificationRouteTemplate = '{{ route('document.verify', ':id') }}';
+        const sp2dRouteTemplate = '{{ route('document.sp2d', ':id') }}';
+
+        function openVerificationModal(documentId, namaVerifikator) {
+            const modal = document.getElementById('verificationModal');
+            const form = document.getElementById('verificationForm');
+            const input = document.getElementById('nama_verifikator');
+
+            form.action = verificationRouteTemplate.replace(':id', documentId);
+            input.value = namaVerifikator || '';
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeVerificationModal(event) {
+            if (event && event.target.id !== 'verificationModal') {
+                return;
+            }
+
+            const modal = document.getElementById('verificationModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function openSp2dModal(documentId, tanggalSp2d) {
+            const modal = document.getElementById('sp2dModal');
+            const form = document.getElementById('sp2dForm');
+            const input = document.getElementById('tanggal_sp2d');
+
+            form.action = sp2dRouteTemplate.replace(':id', documentId);
+            input.value = tanggalSp2d || '';
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeSp2dModal(event) {
+            if (event && event.target.id !== 'sp2dModal') {
+                return;
+            }
+
+            const modal = document.getElementById('sp2dModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    </script>
 @endsection
 

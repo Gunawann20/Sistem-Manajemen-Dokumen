@@ -32,16 +32,20 @@
                             <p class="text-base">{{ $document->keterangan }}</p>
                         </div>
                     @endif
-                    <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
                         <div>
-                            <p class="text-sm text-gray-600">Jenis Dokumen</p>
+                            <p class="text-sm text-gray-600">Pelaksana</p>
                             <span class="inline-block px-3 py-1 text-xs bg-[#3b82f6] text-white rounded font-semibold">
-                                {{ $document->jenis_dokumen }}
+                                {{ $document->pelaksana ?? '-' }}
                             </span>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-600">Tahun</p>
-                            <p class="text-base font-semibold">{{ $document->tahun ?? '-' }}</p>
+                            <p class="text-sm text-gray-600">Kode RO</p>
+                            <p class="text-base font-semibold">{{ $document->kode_ro ?? '-' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Jumlah Anggaran</p>
+                            <p class="text-base font-semibold">{{ $document->jumlah_anggaran !== null ? number_format($document->jumlah_anggaran, 0, ',', '.') : '-' }}</p>
                         </div>
                         <div>
                             <p class="text-sm text-gray-600">Status</p>
@@ -56,6 +60,14 @@
                         <div>
                             <p class="text-sm text-gray-600">Tanggal Dibuat</p>
                             <p class="text-base font-semibold">{{ $document->created_at->format('d M Y H:i') }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Nama Verifikator</p>
+                            <p class="text-base font-semibold">{{ $document->nama_verifikator ?? '-' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Tanggal SP2D</p>
+                            <p class="text-base font-semibold">{{ $document->tanggal_sp2d ? \Carbon\Carbon::parse($document->tanggal_sp2d)->format('d M Y') : '-' }}</p>
                         </div>
                     </div>
                 </div>

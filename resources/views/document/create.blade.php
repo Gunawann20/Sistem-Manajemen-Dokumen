@@ -115,20 +115,13 @@
                         @endif
 
                         <div class="mb-6">
-                            <label for="jenis_dokumen" class="block text-sm font-bold text-gray-700 mb-3">
-                                <i class="fas fa-list-check"></i> Jenis Dokumen <span class="text-red-500">*</span>
+                            <label for="pelaksana" class="block text-sm font-bold text-gray-700 mb-3">
+                                <i class="fas fa-user-tie"></i> Pelaksana <span class="text-red-500">*</span>
                             </label>
-                            <select name="jenis_dokumen" id="jenis_dokumen" 
-                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3b82f6] focus:border-[#3b82f6] outline-none transition @error('jenis_dokumen') border-red-500 @enderror"
-                                required>
-                                <option value="">-- Pilih Jenis Dokumen --</option>
-                                <option value="RKAKL" {{ old('jenis_dokumen') === 'RKAKL' ? 'selected' : '' }}>RKAKL (Rencana Kerja Anggaran Kinerja Lembaga)</option>
-                                <option value="RAPK" {{ old('jenis_dokumen') === 'RAPK' ? 'selected' : '' }}>RAPK (Rencana Alokasi Program & Kegiatan)</option>
-                                <option value="SPJ" {{ old('jenis_dokumen') === 'SPJ' ? 'selected' : '' }}>SPJ (Surat Pertanggungjawaban)</option>
-                                <option value="LKJ" {{ old('jenis_dokumen') === 'LKJ' ? 'selected' : '' }}>LKJ (Laporan Kinerja Jabatan)</option>
-                                <option value="LAKIP" {{ old('jenis_dokumen') === 'LAKIP' ? 'selected' : '' }}>LAKIP (Laporan Akuntabilitas Kinerja Instansi Pemerintah)</option>
-                            </select>
-                            @error('jenis_dokumen')
+                            <input type="text" name="pelaksana" id="pelaksana"
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3b82f6] focus:border-[#3b82f6] outline-none transition @error('pelaksana') border-red-500 @enderror"
+                                placeholder="Masukkan nama pelaksana" value="{{ old('pelaksana') }}" required>
+                            @error('pelaksana')
                                 <span class="text-red-500 text-sm mt-2 block"><i class="fas fa-exclamation-circle"></i> {{ $message }}</span>
                             @enderror
                         </div>
@@ -157,14 +150,26 @@
                             @enderror
                         </div>
 
-                        <div class="mb-8">
-                            <label for="tahun" class="block text-sm font-bold text-gray-700 mb-3">
-                                <i class="fas fa-calendar-alt"></i> Tahun Anggaran <span class="text-red-500">*</span>
+                        <div class="mb-6">
+                            <label for="kode_ro" class="block text-sm font-bold text-gray-700 mb-3">
+                                <i class="fas fa-code"></i> Kode RO <span class="text-red-500">*</span>
                             </label>
-                            <input type="number" name="tahun" id="tahun" 
-                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3b82f6] focus:border-[#3b82f6] outline-none transition @error('tahun') border-red-500 @enderror"
-                                placeholder="2026" min="2020" max="2099" value="{{ old('tahun', date('Y')) }}" required>
-                            @error('tahun')
+                            <input type="text" name="kode_ro" id="kode_ro"
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3b82f6] focus:border-[#3b82f6] outline-none transition @error('kode_ro') border-red-500 @enderror"
+                                placeholder="Masukkan Kode RO" value="{{ old('kode_ro') }}" required>
+                            @error('kode_ro')
+                                <span class="text-red-500 text-sm mt-2 block"><i class="fas fa-exclamation-circle"></i> {{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="mb-8">
+                            <label for="jumlah_anggaran" class="block text-sm font-bold text-gray-700 mb-3">
+                                <i class="fas fa-money-bill-wave"></i> Jumlah Anggaran <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" name="jumlah_anggaran" id="jumlah_anggaran"
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3b82f6] focus:border-[#3b82f6] outline-none transition @error('jumlah_anggaran') border-red-500 @enderror"
+                                placeholder="0" min="0" step="0.01" value="{{ old('jumlah_anggaran') }}" required>
+                            @error('jumlah_anggaran')
                                 <span class="text-red-500 text-sm mt-2 block"><i class="fas fa-exclamation-circle"></i> {{ $message }}</span>
                             @enderror
                         </div>

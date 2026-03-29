@@ -11,12 +11,17 @@ class Document extends Model
         'agenda_id',
         'nama_dokumen',
         'jenis_dokumen',
+        'tahun',
+        'pelaksana',
+        'kode_ro',
+        'jumlah_anggaran',
+        'nama_verifikator',
+        'tanggal_sp2d',
         'file_path',
         'file_type',
         'ukuran_file',
         'status',
         'keterangan',
-        'tahun',
         'admin_id',
     ];
 

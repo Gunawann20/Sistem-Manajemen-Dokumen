@@ -19,8 +19,7 @@
                     <img src="{{ asset('images/logo.png') }}" alt="Logo BKKBN" class="h-14 w-auto drop-shadow-lg">
                 </div>
                 <!-- Institusi Info -->
-                <p class="text-[#f59e0b] text-xs m-0 leading-tight font-semibold">Kementerian Kependudukan</p>
-                <p class="text-[#f59e0b] text-xs m-0 leading-tight font-semibold">Pembangunan Keluarga</p>
+                <p class="text-[#f59e0b] text-xs m-0 leading-tight font-semibold">Direktorat Bina Akses Pelayanan KB</p>
                 <p class="text-gray-300 text-xs m-0 mt-3 leading-tight">Sistem Manajemen</p>
                 <p class="text-gray-300 text-xs m-0 leading-tight">Dokumen</p>
             </div>
@@ -31,11 +30,11 @@
                         <i class="fas fa-chart-pie w-5 mr-3"></i>Dashboard
                     </a>
                 </li>
-                <li>
+                {{-- <li>
                     <a href="{{ route('agenda.index') }}" class="block px-6 py-3 text-white transition-all duration-300 border-l-4 border-transparent hover:bg-opacity-30 hover:bg-[#f59e0b] hover:border-l-[#f59e0b] hover:pl-8 @if(request()->routeIs('agenda.*')) bg-opacity-10 bg-[#f59e0b] border-l-[#f59e0b] text-[#f59e0b] pl-8 @endif">
                         <i class="fas fa-calendar-alt w-5 mr-3"></i>Agenda
                     </a>
-                </li>
+                </li> --}}
                 <li>
                     <a href="{{ route('document.index') }}" class="block px-6 py-3 text-white transition-all duration-300 border-l-4 border-transparent hover:bg-opacity-30 hover:bg-[#f59e0b] hover:border-l-[#f59e0b] hover:pl-8 @if(request()->routeIs('document.*')) bg-opacity-10 bg-[#f59e0b] border-l-[#f59e0b] text-[#f59e0b] pl-8 @endif">
                         <i class="fas fa-file-upload w-5 mr-3"></i>Dokumen

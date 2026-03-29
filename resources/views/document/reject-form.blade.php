@@ -41,13 +41,17 @@
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div class="border-r border-gray-200 pr-4">
-                                <p class="text-sm font-semibold text-gray-600 mb-1">Jenis Dokumen</p>
-                                <p class="text-base font-bold text-blue-600">{{ $document->jenis_dokumen }}</p>
+                                <p class="text-sm font-semibold text-gray-600 mb-1">Pelaksana</p>
+                                <p class="text-base font-bold text-blue-600">{{ $document->pelaksana ?? '-' }}</p>
                             </div>
                             <div>
-                                <p class="text-sm font-semibold text-gray-600 mb-1">Tahun</p>
-                                <p class="text-base font-bold text-gray-800">{{ $document->tahun ?? '-' }}</p>
+                                <p class="text-sm font-semibold text-gray-600 mb-1">Kode RO</p>
+                                <p class="text-base font-bold text-gray-800">{{ $document->kode_ro ?? '-' }}</p>
                             </div>
+                        </div>
+                        <div class="pt-4 border-t border-gray-200">
+                            <p class="text-sm font-semibold text-gray-600 mb-1">Jumlah Anggaran</p>
+                            <p class="text-base font-bold text-gray-800">{{ $document->jumlah_anggaran !== null ? number_format($document->jumlah_anggaran, 0, ',', '.') : '-' }}</p>
                         </div>
                         <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
                             <div>

@@ -14,6 +14,9 @@
             <a href="{{ route('document.create') }}" class="bg-[#3b82f6] hover:bg-[#1e3a8a] text-white px-4 py-2 rounded font-semibold transition flex items-center gap-2">
                 <i class="fas fa-plus"></i> Upload Dokumen Baru
             </a>
+            <a href="{{ route('document.export.excel') }}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded font-semibold transition flex items-center gap-2">
+                <i class="fas fa-download"></i> Download
+            </a>
         </div>
     @else
         <div class="mb-6 bg-blue-100 border-l-4 border-[#3b82f6] text-blue-700 p-4 rounded">
@@ -31,8 +34,9 @@
                     <thead class="bg-[#1e3a8a] text-white">
                         <tr>
                             <th class="px-6 py-3 text-left font-semibold">Nama Dokumen</th>
-                            <th class="px-6 py-3 text-left font-semibold">Jenis Dokumen</th>
-                            <th class="px-6 py-3 text-left font-semibold">Tahun</th>
+                            <th class="px-6 py-3 text-left font-semibold">Pelaksana</th>
+                            <th class="px-6 py-3 text-left font-semibold">Kode RO</th>
+                            <th class="px-6 py-3 text-left font-semibold">Jumlah Anggaran</th>
                             <th class="px-6 py-3 text-left font-semibold">Status</th>
                             <th class="px-6 py-3 text-left font-semibold">Tanggal Dibuat</th>
                             <th class="px-6 py-3 text-left font-semibold">Aksi</th>
@@ -42,8 +46,9 @@
                         @foreach($documents as $document)
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4"><i class="fas fa-file"></i> <strong>{{ $document->nama_dokumen }}</strong></td>
-                                <td class="px-6 py-4">{{ $document->jenis_dokumen }}</td>
-                                <td class="px-6 py-4">{{ $document->tahun ?? '-' }}</td>
+                                <td class="px-6 py-4">{{ $document->pelaksana ?? '-' }}</td>
+                                <td class="px-6 py-4">{{ $document->kode_ro ?? '-' }}</td>
+                                <td class="px-6 py-4">{{ $document->jumlah_anggaran !== null ? number_format($document->jumlah_anggaran, 0, ',', '.') : '-' }}</td>
                                 <td class="px-6 py-4">
                                     @if($document->status === 'approved')
                                         <span class="inline-block px-3 py-1 text-xs bg-green-500 text-white rounded"><i class="fas fa-check-circle"></i> Disetujui</span>
@@ -56,6 +61,16 @@
                                 <td class="px-6 py-4">{{ $document->created_at->format('d M Y') }}</td>
                                 <td class="px-6 py-4">
                                     <div class="flex gap-2 flex-wrap">
+                                        <button type="button"
+                                            onclick="openVerificationModal('{{ $document->id }}', '{{ addslashes($document->nama_verifikator ?? '') }}')"
+                                            class="inline-flex items-center gap-1 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shadow-sm hover:shadow-md">
+                                            <i class="fas fa-user-check"></i> Verifikasi
+                                        </button>
+                                        <button type="button"
+                                            onclick="openSp2dModal('{{ $document->id }}', '{{ $document->tanggal_sp2d ?? '' }}')"
+                                            class="inline-flex items-center gap-1 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shadow-sm hover:shadow-md">
+                                            <i class="fas fa-calendar-check"></i> SP2D
+                                        </button>
                                         <a href="{{ route('document.show', $document) }}" class="inline-flex items-center gap-1 bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shadow-sm hover:shadow-md"><i class="fas fa-eye"></i> Lihat</a>
                                         <a href="{{ route('document.download', $document) }}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shadow-sm hover:shadow-md"><i class="fas fa-download"></i> Download</a>
                                         @if($document->status === 'pending' && auth()->user()->id === $document->user_id)
@@ -83,4 +98,101 @@
             </a>
         </div>
     @endif
+
+    <!-- Modal Verifikasi -->
+    <div id="verificationModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4" onclick="closeVerificationModal(event)">
+        <div class="w-full max-w-md rounded-lg bg-white shadow-xl" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between border-b px-6 py-4">
+                <h3 class="text-lg font-bold text-gray-800"><i class="fas fa-user-check text-purple-600"></i> Verifikasi</h3>
+                <button type="button" onclick="closeVerificationModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="verificationForm" method="POST" class="p-6">
+                @csrf
+                <div>
+                    <label for="nama_verifikator" class="mb-2 block text-sm font-semibold text-gray-700">Nama Verifikator</label>
+                    <input type="text" name="nama_verifikator" id="nama_verifikator" required
+                        class="w-full rounded-lg border-2 border-gray-300 px-4 py-3 outline-none transition focus:border-purple-500 focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div class="mt-6 flex gap-3">
+                    <button type="button" onclick="closeVerificationModal()" class="flex-1 rounded-lg bg-gray-200 py-2 font-semibold text-gray-700 hover:bg-gray-300">Batal</button>
+                    <button type="submit" class="flex-1 rounded-lg bg-purple-600 py-2 font-semibold text-white hover:bg-purple-700">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal SP2D -->
+    <div id="sp2dModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4" onclick="closeSp2dModal(event)">
+        <div class="w-full max-w-md rounded-lg bg-white shadow-xl" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between border-b px-6 py-4">
+                <h3 class="text-lg font-bold text-gray-800"><i class="fas fa-calendar-check text-indigo-600"></i> SP2D</h3>
+                <button type="button" onclick="closeSp2dModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="sp2dForm" method="POST" class="p-6">
+                @csrf
+                <div>
+                    <label for="tanggal_sp2d" class="mb-2 block text-sm font-semibold text-gray-700">Tanggal SP2D</label>
+                    <input type="date" name="tanggal_sp2d" id="tanggal_sp2d" required
+                        class="w-full rounded-lg border-2 border-gray-300 px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="mt-6 flex gap-3">
+                    <button type="button" onclick="closeSp2dModal()" class="flex-1 rounded-lg bg-gray-200 py-2 font-semibold text-gray-700 hover:bg-gray-300">Batal</button>
+                    <button type="submit" class="flex-1 rounded-lg bg-indigo-600 py-2 font-semibold text-white hover:bg-indigo-700">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const verificationRouteTemplate = '{{ route('document.verify', ':id') }}';
+        const sp2dRouteTemplate = '{{ route('document.sp2d', ':id') }}';
+
+        function openVerificationModal(documentId, namaVerifikator) {
+            const modal = document.getElementById('verificationModal');
+            const form = document.getElementById('verificationForm');
+            const input = document.getElementById('nama_verifikator');
+
+            form.action = verificationRouteTemplate.replace(':id', documentId);
+            input.value = namaVerifikator || '';
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeVerificationModal(event) {
+            if (event && event.target.id !== 'verificationModal') {
+                return;
+            }
+
+            const modal = document.getElementById('verificationModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function openSp2dModal(documentId, tanggalSp2d) {
+            const modal = document.getElementById('sp2dModal');
+            const form = document.getElementById('sp2dForm');
+            const input = document.getElementById('tanggal_sp2d');
+
+            form.action = sp2dRouteTemplate.replace(':id', documentId);
+            input.value = tanggalSp2d || '';
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeSp2dModal(event) {
+            if (event && event.target.id !== 'sp2dModal') {
+                return;
+            }
+
+            const modal = document.getElementById('sp2dModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    </script>
 @endsection
