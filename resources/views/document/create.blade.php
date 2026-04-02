@@ -94,7 +94,7 @@
                                 </div>
                             @else
                                 <!-- Admin bisa upload tanpa agenda -->
-                                <div class="mb-6">
+                                {{-- <div class="mb-6">
                                     <label for="agenda_id" class="block text-sm font-bold text-gray-700 mb-3">
                                         <i class="fas fa-calendar-alt"></i> Pilih Agenda (Opsional)
                                     </label>
@@ -110,7 +110,7 @@
                                     @error('agenda_id')
                                         <span class="text-red-500 text-sm mt-2 block"><i class="fas fa-exclamation-circle"></i> {{ $message }}</span>
                                     @enderror
-                                </div>
+                                </div> --}}
                             @endif
                         @endif
 
