@@ -266,12 +266,14 @@ class DocumentController extends Controller
 
         $validated = $request->validate([
             'tanggal_sp2d' => 'required|date',
+            'jumlah_anggaran_sp2d' => 'required|numeric|min:0',
         ]);
 
         $document->update([
             'tanggal_sp2d' => $validated['tanggal_sp2d'],
+            'jumlah_anggaran_sp2d' => $validated['jumlah_anggaran_sp2d'],
         ]);
 
-        return back()->with('success', 'Tanggal SP2D berhasil disimpan.');
+        return back()->with('success', 'Data SP2D berhasil disimpan.');
     }
 }

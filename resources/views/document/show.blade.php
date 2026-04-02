@@ -69,6 +69,10 @@
                             <p class="text-sm text-gray-600">Tanggal SP2D</p>
                             <p class="text-base font-semibold">{{ $document->tanggal_sp2d ? \Carbon\Carbon::parse($document->tanggal_sp2d)->format('d M Y') : '-' }}</p>
                         </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Jumlah Anggaran SP2D</p>
+                            <p class="text-base font-semibold">{{ $document->jumlah_anggaran_sp2d !== null ? number_format($document->jumlah_anggaran_sp2d, 0, ',', '.') : '-' }}</p>
+                        </div>
                     </div>
                 </div>
             </div>

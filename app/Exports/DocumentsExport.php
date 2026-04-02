@@ -12,7 +12,6 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class DocumentsExport implements FromCollection, WithHeadings, WithColumnWidths, WithStyles, WithEvents
@@ -36,6 +35,7 @@ class DocumentsExport implements FromCollection, WithHeadings, WithColumnWidths,
                 'status' => $document->status,
                 'nama_verifikator' => $document->nama_verifikator ?? '-',
                 'tanggal_sp2d' => $document->tanggal_sp2d ?? '-',
+                'jumlah_anggaran_sp2d' => $document->jumlah_anggaran_sp2d !== null ? (float) $document->jumlah_anggaran_sp2d : null,
                 'tanggal_dibuat' => $document->created_at?->format('Y-m-d H:i:s'),
             ];
         });
@@ -52,6 +52,7 @@ class DocumentsExport implements FromCollection, WithHeadings, WithColumnWidths,
             'Status',
             'Nama Verifikator',
             'Tanggal SP2D',
+            'Jumlah Anggaran SP2D',
             'Tanggal Dibuat',
         ];
     }
@@ -67,7 +68,8 @@ class DocumentsExport implements FromCollection, WithHeadings, WithColumnWidths,
             'F' => 14,
             'G' => 24,
             'H' => 16,
-            'I' => 22,
+            'I' => 24,
+            'J' => 22,
         ];
     }
 
@@ -101,21 +103,22 @@ class DocumentsExport implements FromCollection, WithHeadings, WithColumnWidths,
 
                 // Freeze header and enable filter for better navigation.
                 $sheet->freezePane('A2');
-                $sheet->setAutoFilter('A1:I1');
+                $sheet->setAutoFilter('A1:J1');
 
                 // Global alignment and table border.
-                $sheet->getStyle("A1:I{$highestRow}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
-                $sheet->getStyle("A1:I{$highestRow}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN)->getColor()->setRGB('D1D5DB');
+                $sheet->getStyle("A1:J{$highestRow}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+                $sheet->getStyle("A1:J{$highestRow}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN)->getColor()->setRGB('D1D5DB');
 
-                // Numeric format for budget column.
+                // Numeric format for budget columns.
                 if ($highestRow >= 2) {
-                    $sheet->getStyle("E2:E{$highestRow}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
+                    $sheet->getStyle("E2:E{$highestRow}")->getNumberFormat()->setFormatCode('#,##0');
+                    $sheet->getStyle("I2:I{$highestRow}")->getNumberFormat()->setFormatCode('#,##0');
                 }
 
                 // Zebra rows for readability.
                 for ($row = 2; $row <= $highestRow; $row++) {
                     if ($row % 2 === 0) {
-                        $sheet->getStyle("A{$row}:I{$row}")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('F8FAFC');
+                        $sheet->getStyle("A{$row}:J{$row}")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('F8FAFC');
                     }
 
                     // Conditional color for status column.

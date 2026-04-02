@@ -67,7 +67,7 @@
                                             <i class="fas fa-user-check"></i> Verifikasi
                                         </button>
                                         <button type="button"
-                                            onclick="openSp2dModal('{{ $document->id }}', '{{ $document->tanggal_sp2d ?? '' }}')"
+                                            onclick="openSp2dModal('{{ $document->id }}', '{{ $document->tanggal_sp2d ?? '' }}', '{{ $document->jumlah_anggaran_sp2d ?? '' }}')"
                                             class="inline-flex items-center gap-1 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shadow-sm hover:shadow-md">
                                             <i class="fas fa-calendar-check"></i> SP2D
                                         </button>
@@ -139,6 +139,11 @@
                     <input type="date" name="tanggal_sp2d" id="tanggal_sp2d" required
                         class="w-full rounded-lg border-2 border-gray-300 px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500">
                 </div>
+                <div class="mt-4">
+                    <label for="jumlah_anggaran_sp2d" class="mb-2 block text-sm font-semibold text-gray-700">Jumlah Anggaran SP2D</label>
+                    <input type="number" name="jumlah_anggaran_sp2d" id="jumlah_anggaran_sp2d" required min="0" step="0.01"
+                        class="w-full rounded-lg border-2 border-gray-300 px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500">
+                </div>
                 <div class="mt-6 flex gap-3">
                     <button type="button" onclick="closeSp2dModal()" class="flex-1 rounded-lg bg-gray-200 py-2 font-semibold text-gray-700 hover:bg-gray-300">Batal</button>
                     <button type="submit" class="flex-1 rounded-lg bg-indigo-600 py-2 font-semibold text-white hover:bg-indigo-700">Simpan</button>
@@ -173,13 +178,15 @@
             modal.classList.remove('flex');
         }
 
-        function openSp2dModal(documentId, tanggalSp2d) {
+        function openSp2dModal(documentId, tanggalSp2d, jumlahAnggaranSp2d) {
             const modal = document.getElementById('sp2dModal');
             const form = document.getElementById('sp2dForm');
-            const input = document.getElementById('tanggal_sp2d');
+            const tanggalInput = document.getElementById('tanggal_sp2d');
+            const jumlahAnggaranInput = document.getElementById('jumlah_anggaran_sp2d');
 
             form.action = sp2dRouteTemplate.replace(':id', documentId);
-            input.value = tanggalSp2d || '';
+            tanggalInput.value = tanggalSp2d || '';
+            jumlahAnggaranInput.value = jumlahAnggaranSp2d || '';
 
             modal.classList.remove('hidden');
             modal.classList.add('flex');

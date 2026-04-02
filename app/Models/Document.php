@@ -17,6 +17,7 @@ class Document extends Model
         'jumlah_anggaran',
         'nama_verifikator',
         'tanggal_sp2d',
+        'jumlah_anggaran_sp2d',
         'file_path',
         'file_type',
         'ukuran_file',
